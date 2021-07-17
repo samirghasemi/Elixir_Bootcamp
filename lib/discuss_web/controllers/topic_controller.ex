@@ -3,9 +3,44 @@ defmodule DiscussWeb.TopicController do
   alias Discuss.Topic
   alias Discuss.Repo
   import Routes
+  alias DiscussWeb.Router.Helpers
+
 
   plug DiscussWeb.Plugs.RequireAuth when action in [:new , :create , :edit, :update , :delete]
+  plug :exists? when action in [:edit , :update , :delete , :show]
+  plug :check_topic_owner when action in [:update , :edit , :delete]
 
+  def exists?(conn , _params) do
+    %{params: %{"id" =>topic_id}} = conn
+    topic = Repo.get(Topic , topic_id)
+    if topic == nil do
+      conn
+      |> put_flash(:error , "this topic is not exists!")
+      |> redirect(to: Helpers.topic_path(conn , :index))
+      |> halt()
+    else
+      conn
+    end
+  end
+
+
+  def check_topic_owner(conn , _params) do
+    %{params: %{"id" =>topic_id}} = conn
+    topic = Repo.get(Topic , topic_id)
+    if topic.user_id == conn.assigns.user.id do
+      conn
+    else
+      conn
+      |> put_flash(:error , "you can not edit this!")
+      |> redirect(to: Helpers.topic_path(conn , :index))
+      |> halt()
+    end
+  end
+
+  def show(conn , %{"id" => topic_id}) do
+    topic = Repo.get!(Topic , topic_id)
+    render conn ,"show.html" , topic: topic
+  end
   def index(conn , _params) do
     topics = Repo.all(Topic)
     render conn, "index.html", topics: topics
@@ -17,7 +52,13 @@ defmodule DiscussWeb.TopicController do
   end
 
   def create(conn , %{"topic" => topic}) do
-    changeset = Topic.changeset(%Topic{} , topic)
+
+    # changeset = Topic.changeset(%Topic{} , topic)
+    user = conn.assigns.user
+    changeset = user
+    |> Ecto.build_assoc(:topics)
+    |> Topic.changeset(topic)
+
     case Repo.insert(changeset) do
       {:ok , _topic} ->
         conn
