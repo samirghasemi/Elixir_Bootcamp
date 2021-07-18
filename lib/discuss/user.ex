@@ -2,12 +2,16 @@ defmodule Discuss.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Jason.Encoder , only: [:email]}
+
   schema "users" do
     field :email, :string
     field :provider , :string
     field :token , :string
     timestamps()
+
     has_many :topics , Discuss.Topic
+    has_many :comments , Discuss.Comment
   end
 
   def changeset(struct , params \\ %{}) do
