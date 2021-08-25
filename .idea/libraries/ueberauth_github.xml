@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ueberauth_github" type="mix">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/ueberauth_github/lib" />
+    </SOURCES>
+  </library>
+</component>

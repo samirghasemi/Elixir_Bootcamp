@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="ueberauth_google" type="mix">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/ueberauth_google/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/ueberauth_google/ebin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/ueberauth_google/lib" />
+    </SOURCES>
+  </library>
+</component>
